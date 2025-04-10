@@ -23,12 +23,23 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, Eye, EyeOff } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type FormValues = z.infer<typeof deviceValidationSchema>;
 
 export default function AddDeviceForm() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [isPasswordError, setIsPasswordError] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(deviceValidationSchema),
@@ -37,7 +48,11 @@ export default function AddDeviceForm() {
 
   const addDeviceMutation = useMutation({
     mutationFn: async (data: FormValues) => {
-      const response = await apiRequest("POST", "/api/devices", data);
+      const payload = {
+        deviceData: data,
+        password: adminPassword
+      };
+      const response = await apiRequest("POST", "/api/devices", payload);
       return response.json();
     },
     onSuccess: () => {
@@ -45,11 +60,26 @@ export default function AddDeviceForm() {
       form.reset(DEFAULT_DEVICE_FORM_VALUES);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
+      setShowPasswordDialog(false);
+      setAdminPassword('');
+      setIsPasswordError(false);
     },
+    onError: (error: any) => {
+      if (error.message?.includes("Invalid password")) {
+        setIsPasswordError(true);
+      } else {
+        setShowPasswordDialog(false);
+      }
+    }
   });
 
   const onSubmit = (data: FormValues) => {
-    addDeviceMutation.mutate(data);
+    setShowPasswordDialog(true);
+  };
+  
+  const handlePasswordConfirm = () => {
+    setIsPasswordError(false);
+    addDeviceMutation.mutate(form.getValues());
   };
 
   const handleReset = () => {
@@ -238,7 +268,7 @@ export default function AddDeviceForm() {
         </Alert>
       )}
 
-      {addDeviceMutation.isError && (
+      {addDeviceMutation.isError && !isPasswordError && (
         <Alert className="mt-4" variant="destructive">
           <AlertDescription>
             {addDeviceMutation.error instanceof Error
@@ -247,6 +277,73 @@ export default function AddDeviceForm() {
           </AlertDescription>
         </Alert>
       )}
+      
+      {/* Password Confirmation Dialog */}
+      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Enter Admin Password</DialogTitle>
+            <DialogDescription>
+              Please enter your admin password to add this device.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-2">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Admin Password</label>
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter password"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  className={isPasswordError ? "border-destructive" : ""}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 text-neutral-400 hover:text-neutral-600"
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" aria-hidden="true" />
+                  ) : (
+                    <Eye className="h-4 w-4" aria-hidden="true" />
+                  )}
+                  <span className="sr-only">
+                    {showPassword ? "Hide password" : "Show password"}
+                  </span>
+                </Button>
+              </div>
+              {isPasswordError && (
+                <p className="text-sm text-destructive">Invalid password. Please try again.</p>
+              )}
+            </div>
+          </div>
+          <DialogFooter className="sm:justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setShowPasswordDialog(false);
+                setIsPasswordError(false);
+                setAdminPassword('');
+              }}
+              disabled={addDeviceMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handlePasswordConfirm}
+              disabled={!adminPassword || addDeviceMutation.isPending}
+            >
+              {addDeviceMutation.isPending ? "Processing..." : "Confirm"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
