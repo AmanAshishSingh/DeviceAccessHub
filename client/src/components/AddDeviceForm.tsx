@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,7 +8,7 @@ import { deviceValidationSchema } from "@shared/schema";
 import { 
   DEFAULT_DEVICE_FORM_VALUES, 
   DEVICE_TYPES, 
-  OTA_VERSIONS 
+  OTA_VERSIONS_BY_TYPE 
 } from "@/types/device";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,11 +40,30 @@ export default function AddDeviceForm() {
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
   const [isPasswordError, setIsPasswordError] = useState(false);
+  const [availableOTAVersions, setAvailableOTAVersions] = useState<string[]>([]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(deviceValidationSchema),
     defaultValues: DEFAULT_DEVICE_FORM_VALUES,
   });
+  
+  // Watch device type to update OTA versions
+  const deviceType = form.watch("deviceType");
+  
+  // Update available OTA versions when device type changes
+  useEffect(() => {
+    if (deviceType && OTA_VERSIONS_BY_TYPE[deviceType]) {
+      setAvailableOTAVersions(OTA_VERSIONS_BY_TYPE[deviceType]);
+      
+      // Clear the current OTA version if it doesn't match the device type
+      const currentOTA = form.getValues("currentOTA");
+      if (currentOTA && !OTA_VERSIONS_BY_TYPE[deviceType].includes(currentOTA)) {
+        form.setValue("currentOTA", "");
+      }
+    } else {
+      setAvailableOTAVersions([]);
+    }
+  }, [deviceType, form]);
 
   const addDeviceMutation = useMutation({
     mutationFn: async (data: FormValues) => {
@@ -155,9 +174,9 @@ export default function AddDeviceForm() {
                       list="ota-versions"
                     />
                   </FormControl>
-                  {/* Provide datalist for autocomplete of common OTA versions */}
+                  {/* Provide datalist for autocomplete of device-specific OTA versions */}
                   <datalist id="ota-versions">
-                    {OTA_VERSIONS.map((version) => (
+                    {availableOTAVersions.map((version) => (
                       <option key={version} value={version} />
                     ))}
                   </datalist>
