@@ -4,7 +4,8 @@ import { storage } from "./storage";
 import { 
   deviceValidationSchema, 
   deviceSearchSchema, 
-  insertDeviceSchema
+  insertDeviceSchema,
+  updateDeviceSchema
 } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import session from "express-session";
