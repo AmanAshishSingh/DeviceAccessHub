@@ -18,6 +18,7 @@ export interface IStorage {
   getDevices(): Promise<Device[]>;
   getDevice(id: number): Promise<Device | undefined>;
   createDevice(device: InsertDevice): Promise<Device>;
+  updateDevice(id: number, device: Partial<InsertDevice>): Promise<Device | undefined>;
   searchDevices(criteria: DeviceSearch): Promise<Device[]>;
 }
 
@@ -89,6 +90,24 @@ export class MemStorage implements IStorage {
     const device: Device = { ...insertDevice, id };
     this.devices.set(id, device);
     return device;
+  }
+
+  async updateDevice(id: number, updates: Partial<InsertDevice>): Promise<Device | undefined> {
+    const device = this.devices.get(id);
+    if (!device) {
+      return undefined;
+    }
+
+    // Update the device with new values, keeping deviceType and deviceId unchanged
+    const updatedDevice: Device = {
+      ...device,
+      ...updates,
+      deviceType: device.deviceType, // Ensure these fields are not changed
+      deviceId: device.deviceId
+    };
+    
+    this.devices.set(id, updatedDevice);
+    return updatedDevice;
   }
   
   async searchDevices(criteria: DeviceSearch): Promise<Device[]> {

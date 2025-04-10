@@ -54,4 +54,12 @@ export const deviceSearchSchema = z.object({
   currentOTA: z.string().optional(),
 });
 
+export const updateDeviceSchema = z.object({
+  currentOTA: z.string().min(1, { message: "OTA version is required" }),
+  ipAddress: z.string().min(1, { message: "IP address is required" }),
+  sshUser: z.string().min(1, { message: "SSH username is required" }),
+  password: z.string().min(1, { message: "Password is required" }),
+});
+
 export type DeviceSearch = z.infer<typeof deviceSearchSchema>;
+export type UpdateDevice = z.infer<typeof updateDeviceSchema>;
