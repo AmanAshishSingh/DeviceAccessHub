@@ -50,20 +50,44 @@ export default function AddDeviceForm() {
   // Watch device type to update OTA versions
   const deviceType = form.watch("deviceType");
   
+  // Helper function to get OTA versions for a device type
+  const getOtaVersionsForDeviceType = (type: string) => {
+    if (type === "Krait1" || type === "Krait2" || type === "Bagheera2" || 
+        type === "Bagheera3" || type === "Octo") {
+      return OTA_VERSIONS_BY_TYPE[type as keyof typeof OTA_VERSIONS_BY_TYPE];
+    }
+    return [];
+  };
+
   // Update available OTA versions when device type changes
   useEffect(() => {
-    if (deviceType && OTA_VERSIONS_BY_TYPE[deviceType]) {
-      setAvailableOTAVersions(OTA_VERSIONS_BY_TYPE[deviceType]);
+    if (deviceType) {
+      const versions = getOtaVersionsForDeviceType(deviceType);
+      setAvailableOTAVersions(versions);
       
       // Clear the current OTA version if it doesn't match the device type
       const currentOTA = form.getValues("currentOTA");
-      if (currentOTA && !OTA_VERSIONS_BY_TYPE[deviceType].includes(currentOTA)) {
+      if (currentOTA && versions.length > 0 && !versions.includes(currentOTA)) {
         form.setValue("currentOTA", "");
       }
     } else {
       setAvailableOTAVersions([]);
     }
   }, [deviceType, form]);
+  
+  // Helper function to get OTA version description for selected device type
+  const getOtaHelperText = () => {
+    if (!deviceType) return "";
+    
+    const prefix = deviceType === "Krait1" ? "2.x"
+                 : deviceType === "Krait2" ? "4.x"
+                 : deviceType === "Bagheera2" ? "3.x"
+                 : deviceType === "Bagheera3" ? "5.x"
+                 : deviceType === "Octo" ? "7.x"
+                 : "";
+                 
+    return prefix ? `This device type uses OTA versions starting with ${prefix}` : "";
+  };
 
   const addDeviceMutation = useMutation({
     mutationFn: async (data: FormValues) => {
