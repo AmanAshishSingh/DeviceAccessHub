@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Device, OTA_VERSIONS } from "@/types/device";
+import { Eye, EyeOff } from "lucide-react";
 
 import {
   Form,
@@ -44,6 +45,7 @@ interface EditDeviceFormProps {
 
 export default function EditDeviceForm({ device, onEditComplete }: EditDeviceFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
