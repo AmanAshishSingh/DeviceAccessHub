@@ -43,7 +43,7 @@ export const DEFAULT_DEVICE_FORM_VALUES: DeviceFormValues = {
 };
 
 export const DEFAULT_SEARCH_CRITERIA: DeviceSearchCriteria = {
-  deviceType: "",
+  deviceType: "any_type",
   deviceId: "",
-  currentOTA: ""
+  currentOTA: "any_ota"
 };

@@ -47,9 +47,11 @@ export default function FindDevicesForm() {
   });
 
   const onSubmit = (data: FormValues) => {
-    // Filter out empty strings as they should be treated as undefined
+    // Filter out special values that should be treated as undefined
     const filteredData = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value !== "")
+      Object.entries(data).filter(([_, value]) => 
+        value !== "" && value !== "any_type" && value !== "any_ota"
+      )
     );
     searchMutation.mutate(filteredData as FormValues);
   };
@@ -84,7 +86,7 @@ export default function FindDevicesForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">Any Device Type</SelectItem>
+                      <SelectItem value="any_type">Any Device Type</SelectItem>
                       {DEVICE_TYPES.map((type) => (
                         <SelectItem key={type} value={type}>
                           {type}
@@ -130,7 +132,7 @@ export default function FindDevicesForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">Any OTA Version</SelectItem>
+                      <SelectItem value="any_ota">Any OTA Version</SelectItem>
                       {OTA_VERSIONS.map((version) => (
                         <SelectItem key={version} value={version}>
                           {version}

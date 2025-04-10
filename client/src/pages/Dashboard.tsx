@@ -5,11 +5,11 @@ import FindDevicesForm from "@/components/FindDevicesForm";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-type Action = "" | "add" | "find";
+type Action = "none" | "add" | "find";
 
 export default function Dashboard() {
   const { username, logout } = useAuthStore();
-  const [selectedAction, setSelectedAction] = useState<Action>("");
+  const [selectedAction, setSelectedAction] = useState<Action>("none");
 
   const handleActionChange = (value: string) => {
     setSelectedAction(value as Action);
@@ -52,7 +52,7 @@ export default function Dashboard() {
                 <SelectValue placeholder="Select an action" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Select an action</SelectItem>
+                <SelectItem value="none">Select an action</SelectItem>
                 <SelectItem value="add">Add New Device</SelectItem>
                 <SelectItem value="find">Find Devices</SelectItem>
               </SelectContent>
