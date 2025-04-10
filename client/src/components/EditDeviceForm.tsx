@@ -61,10 +61,9 @@ export default function EditDeviceForm({ device, onEditComplete }: EditDeviceFor
   // Define the mutation to update a device
   const editDeviceMutation = useMutation({
     mutationFn: async (data: FormValues) => {
-      return apiRequest(`/api/devices/${device.id}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
+      const response = await apiRequest("PUT", `/api/devices/${device.id}`, data);
+      const updatedDevice = await response.json();
+      return updatedDevice;
     },
     onSuccess: () => {
       // Invalidate the devices query to refresh the data
