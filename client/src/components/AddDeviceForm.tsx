@@ -116,24 +116,20 @@ export default function AddDeviceForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Current OTA <span className="text-destructive">*</span></FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={addDeviceMutation.isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select OTA Version" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {OTA_VERSIONS.map((version) => (
-                        <SelectItem key={version} value={version}>
-                          {version}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter OTA version (e.g. 5.6.10.rc.2_dev6)" 
+                      {...field} 
+                      disabled={addDeviceMutation.isPending}
+                      list="ota-versions"
+                    />
+                  </FormControl>
+                  {/* Provide datalist for autocomplete of common OTA versions */}
+                  <datalist id="ota-versions">
+                    {OTA_VERSIONS.map((version) => (
+                      <option key={version} value={version} />
+                    ))}
+                  </datalist>
                   <FormMessage />
                 </FormItem>
               )}

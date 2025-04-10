@@ -23,7 +23,7 @@ export interface DeviceSearchCriteria {
   currentOTA?: string;
 }
 
-export const DEVICE_TYPES = ["Krait1", "Krait2", "Bagheera2", "Bagheera3"];
+export const DEVICE_TYPES = ["Krait1", "Krait2", "Bagheera2", "Bagheera3", "Octo"];
 
 export const OTA_VERSIONS = [
   "2.6.10.rc.1_dev7",
