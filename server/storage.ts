@@ -19,6 +19,7 @@ export interface IStorage {
   getDevice(id: number): Promise<Device | undefined>;
   createDevice(device: InsertDevice): Promise<Device>;
   updateDevice(id: number, device: Partial<InsertDevice>): Promise<Device | undefined>;
+  deleteDevice(id: number): Promise<boolean>;
   searchDevices(criteria: DeviceSearch): Promise<Device[]>;
 }
 
@@ -109,6 +110,14 @@ export class MemStorage implements IStorage {
     
     this.devices.set(id, updatedDevice);
     return updatedDevice;
+  }
+  
+  async deleteDevice(id: number): Promise<boolean> {
+    if (!this.devices.has(id)) {
+      return false;
+    }
+    
+    return this.devices.delete(id);
   }
   
   async searchDevices(criteria: DeviceSearch): Promise<Device[]> {

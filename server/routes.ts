@@ -88,8 +88,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.post("/api/devices", checkAuth, async (req: Request, res: Response) => {
     try {
+      // Extract and validate the admin password
+      const { deviceData, password } = req.body;
+      
+      if (password !== "EKM2800123Netra") {
+        return res.status(403).json({ message: "Invalid password" });
+      }
+      
       // Validate request body against schema
-      const validationResult = deviceValidationSchema.safeParse(req.body);
+      const validationResult = deviceValidationSchema.safeParse(deviceData);
       
       if (!validationResult.success) {
         const errorMessage = fromZodError(validationResult.error).message;
@@ -110,8 +117,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      const device = await storage.createDevice(newDevice);
-      return res.status(201).json(device);
+      const createdDevice = await storage.createDevice(newDevice);
+      return res.status(201).json(createdDevice);
     } catch (error) {
       console.error("Error creating device:", error);
       return res.status(500).json({ message: "Failed to create device" });
@@ -151,8 +158,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Device not found" });
       }
       
+      // Extract and validate the admin password
+      const { updates, password } = req.body;
+      
+      if (password !== "EKM2800123Netra") {
+        return res.status(403).json({ message: "Invalid password" });
+      }
+      
       // Validate request body against update schema
-      const validationResult = updateDeviceSchema.safeParse(req.body);
+      const validationResult = updateDeviceSchema.safeParse(updates);
       
       if (!validationResult.success) {
         const errorMessage = fromZodError(validationResult.error).message;
@@ -160,14 +174,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Update device
-      const updates = validationResult.data;
-      const updatedDevice = await storage.updateDevice(deviceId, updates);
+      const deviceUpdates = validationResult.data;
+      const updatedDevice = await storage.updateDevice(deviceId, deviceUpdates);
       
       return res.status(200).json(updatedDevice);
     } catch (error) {
       console.error("Error updating device:", error);
       return res.status(500).json({ message: "Failed to update device" });
     }
+  });
+
+  // Add delete device endpoint
+  app.delete("/api/devices/:id", checkAuth, async (req: Request, res: Response) => {
+    try {
+      const deviceId = parseInt(req.params.id);
+      if (isNaN(deviceId)) {
+        return res.status(400).json({ message: "Invalid device ID" });
+      }
+      
+      // Check if device exists
+      const device = await storage.getDevice(deviceId);
+      if (!device) {
+        return res.status(404).json({ message: "Device not found" });
+      }
+      
+      // Validate admin password
+      const { password } = req.body;
+      if (password !== "EKM2800123Netra") {
+        return res.status(403).json({ message: "Invalid password" });
+      }
+      
+      // Delete device
+      const success = await storage.deleteDevice(deviceId);
+      if (success) {
+        return res.status(200).json({ message: "Device deleted successfully" });
+      } else {
+        return res.status(500).json({ message: "Failed to delete device" });
+      }
+    } catch (error) {
+      console.error("Error deleting device:", error);
+      return res.status(500).json({ message: "Failed to delete device" });
+    }
+  });
+
+  // Add password verification endpoint for device operations
+  app.post("/api/verify-password", checkAuth, (req: Request, res: Response) => {
+    const { password } = req.body;
+    
+    if (password !== "EKM2800123Netra") {
+      return res.status(403).json({ message: "Invalid password" });
+    }
+    
+    return res.status(200).json({ message: "Password verified" });
   });
 
   const httpServer = createServer(app);
