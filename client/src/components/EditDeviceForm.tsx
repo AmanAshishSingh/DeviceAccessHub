@@ -109,30 +109,27 @@ export default function EditDeviceForm({ device, onEditComplete }: EditDeviceFor
           </div>
         </div>
 
-        {/* OTA Version select field */}
+        {/* OTA Version input field with autocomplete */}
         <FormField
           control={form.control}
           name="currentOTA"
           render={({ field }) => (
             <FormItem>
               <FormLabel>OTA Version</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select OTA version" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {OTA_VERSIONS.map((version) => (
-                    <SelectItem key={version} value={version}>
-                      {version}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormControl>
+                <Input 
+                  placeholder="Enter OTA version (e.g. 5.6.10.rc.2_dev6)" 
+                  {...field} 
+                  disabled={isSubmitting}
+                  list="edit-ota-versions"
+                />
+              </FormControl>
+              {/* Provide datalist for autocomplete of common OTA versions */}
+              <datalist id="edit-ota-versions">
+                {OTA_VERSIONS.map((version) => (
+                  <option key={version} value={version} />
+                ))}
+              </datalist>
               <FormMessage />
             </FormItem>
           )}
@@ -168,16 +165,39 @@ export default function EditDeviceForm({ device, onEditComplete }: EditDeviceFor
           )}
         />
 
-        {/* Password input field */}
+        {/* Password input field with visibility toggle */}
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="Device password" {...field} />
-              </FormControl>
+              <div className="relative">
+                <FormControl>
+                  <Input 
+                    type={showPassword ? "text" : "password"} 
+                    placeholder="Device password" 
+                    {...field} 
+                  />
+                </FormControl>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 text-neutral-400 hover:text-neutral-600"
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" aria-hidden="true" />
+                  ) : (
+                    <Eye className="h-4 w-4" aria-hidden="true" />
+                  )}
+                  <span className="sr-only">
+                    {showPassword ? "Hide password" : "Show password"}
+                  </span>
+                </Button>
+              </div>
               <FormMessage />
             </FormItem>
           )}
