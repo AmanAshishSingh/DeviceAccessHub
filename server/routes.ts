@@ -96,6 +96,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const newDevice = validationResult.data;
+      
+      // Check if a device with same deviceType and deviceId already exists
+      const existingDevices = await storage.searchDevices({
+        deviceType: newDevice.deviceType,
+        deviceId: newDevice.deviceId
+      });
+      
+      if (existingDevices.length > 0) {
+        return res.status(409).json({ 
+          message: "A device with this device type and ID already exists" 
+        });
+      }
+      
       const device = await storage.createDevice(newDevice);
       return res.status(201).json(device);
     } catch (error) {
@@ -120,6 +133,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error searching devices:", error);
       return res.status(500).json({ message: "Failed to search devices" });
+    }
+  });
+  
+  // New route to update a device
+  app.put("/api/devices/:id", checkAuth, async (req: Request, res: Response) => {
+    try {
+      const deviceId = parseInt(req.params.id);
+      if (isNaN(deviceId)) {
+        return res.status(400).json({ message: "Invalid device ID" });
+      }
+      
+      // Check if device exists
+      const device = await storage.getDevice(deviceId);
+      if (!device) {
+        return res.status(404).json({ message: "Device not found" });
+      }
+      
+      // Validate request body against update schema
+      const validationResult = updateDeviceSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        const errorMessage = fromZodError(validationResult.error).message;
+        return res.status(400).json({ message: errorMessage });
+      }
+      
+      // Update device
+      const updates = validationResult.data;
+      const updatedDevice = await storage.updateDevice(deviceId, updates);
+      
+      return res.status(200).json(updatedDevice);
+    } catch (error) {
+      console.error("Error updating device:", error);
+      return res.status(500).json({ message: "Failed to update device" });
     }
   });
 
