@@ -21,7 +21,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import DeviceTable from "./DeviceTable";
+import EditDeviceForm from "./EditDeviceForm";
 import { z } from "zod";
 
 type FormValues = z.infer<typeof deviceSearchSchema>;
@@ -29,6 +31,8 @@ type FormValues = z.infer<typeof deviceSearchSchema>;
 export default function FindDevicesForm() {
   const [searchResults, setSearchResults] = useState<Device[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [editingDevice, setEditingDevice] = useState<Device | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(deviceSearchSchema),
@@ -38,7 +42,8 @@ export default function FindDevicesForm() {
   const searchMutation = useMutation({
     mutationFn: async (data: FormValues) => {
       const response = await apiRequest("POST", "/api/devices/search", data);
-      return response.json() as Promise<Device[]>;
+      const devices = await response.json() as Device[];
+      return devices;
     },
     onSuccess: (data) => {
       setSearchResults(data);
@@ -60,6 +65,21 @@ export default function FindDevicesForm() {
     form.reset(DEFAULT_SEARCH_CRITERIA);
     setSearchResults([]);
     setHasSearched(false);
+  };
+
+  const handleEditDevice = (device: Device) => {
+    setEditingDevice(device);
+    setEditDialogOpen(true);
+  };
+
+  const handleEditComplete = () => {
+    setEditingDevice(null);
+    setEditDialogOpen(false);
+    
+    // Refresh search results to get updated data
+    if (searchMutation.data) {
+      onSubmit(form.getValues());
+    }
   };
 
   return (
@@ -179,12 +199,30 @@ export default function FindDevicesForm() {
           <h3 className="text-md font-medium text-neutral-700 mb-3">Search Results</h3>
           
           {searchResults.length > 0 ? (
-            <DeviceTable devices={searchResults} />
+            <DeviceTable 
+              devices={searchResults}
+              onEditDevice={handleEditDevice}
+            />
           ) : (
             <p className="mt-3 text-neutral-600">No devices found matching your criteria.</p>
           )}
         </div>
       )}
+
+      {/* Edit Device Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Device</DialogTitle>
+          </DialogHeader>
+          {editingDevice && (
+            <EditDeviceForm 
+              device={editingDevice} 
+              onEditComplete={handleEditComplete} 
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
