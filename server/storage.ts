@@ -41,20 +41,22 @@ export class MemStorage implements IStorage {
       username: "ubuntu",
       password: "EKM2800123Netra"
     });
-    
     // Add initial device data
     const initialDevices = [
       { deviceType: "Krait2", deviceId: "6603041292", currentOTA: "4.6.10.rc.2_dev6", ipAddress: "172.16.16.141", sshUser: "root", password: "EKM2020123Krait" },
-      { deviceType: "Krait2", deviceId: "6603070196", currentOTA: "4.6.10.rc.2_dev6", ipAddress: "172.16.17.138", sshUser: "root", password: "EKM2020123Krait" },
+      { deviceType: "Krait2", deviceId: "6603070196", currentOTA: "4.6.10.rc.2_dev6", ipAddress: "172.16.18.250", sshUser: "root", password: "EKM2020123Krait" },
       { deviceType: "Krait1", deviceId: "264067598", currentOTA: "2.6.10.rc.1_dev7", ipAddress: "172.16.17.149", sshUser: "root", password: "EKM2020123Krait" },
       { deviceType: "Krait1", deviceId: "264062606", currentOTA: "2.6.10.rc.1_dev7", ipAddress: "172.16.23.249", sshUser: "root", password: "root" },
-      { deviceType: "Bagheera2", deviceId: "3633042296", currentOTA: "3.6.10.rc.1_dev6", ipAddress: "172.16.22.185", sshUser: "ubuntu", password: "ubuntu1" },
-      { deviceType: "Bagheera2", deviceId: "3633039070", currentOTA: "3.6.10.rc.1_dev7", ipAddress: "172.16.17.255", sshUser: "ubuntu", password: "ubuntu1" },
-      { deviceType: "Bagheera3", deviceId: "103302400034", currentOTA: "5.6.10.rc.2_dev6", ipAddress: "192.168.2.3", sshUser: "ubuntu", password: "ubuntu1" },
+      { deviceType: "Bagheera2", deviceId: "3633042296", currentOTA: "3.6.10.rc.1_dev7", ipAddress: "172.16.17.235", sshUser: "ubuntu", password: "ubuntu1" },
+      { deviceType: "Bagheera2", deviceId: "3633039070", currentOTA: "3.6.10.rc.1_dev7", ipAddress: "172.16.18.72", sshUser: "ubuntu", password: "ubuntu1" },
+      { deviceType: "Bagheera3", deviceId: "103302400034", currentOTA: "5.6.10.rc.2_dev6", ipAddress: "172.16.19.252", sshUser: "ubuntu", password: "ubuntu1" },
+      { deviceType: "Bagheera3", deviceId: "103212400422", currentOTA: "5.6.10.rc.2_dev6", ipAddress: "172.16.20.9", sshUser: "ubuntu", password: "ubuntu1" },
       { deviceType: "Bagheera3", deviceId: "103022400202", currentOTA: "5.6.10.rc.2_dev6", ipAddress: "172.16.18.37", sshUser: "ubuntu", password: "ubuntu1" },
-      { deviceType: "Octo", deviceId: "125222400003", currentOTA: "7.6.10.rc.1", ipAddress: "172.16.17.227", sshUser: "ubuntu", password: "EKM2800Netra123" }
+      { deviceType: "Octo", deviceId: "125222400003", currentOTA: "7.6.10.rc.1", ipAddress: "172.16.17.227", sshUser: "ubuntu", password: "EKM2800Netra123" },
+      { deviceType: "Octo", deviceId: "125122400018", currentOTA: "7.6.10.rc.1", ipAddress: "", sshUser: "ubuntu", password: "EKM2800Netra123" },
+      { deviceType: "Octo", deviceId: "125122400021", currentOTA: "7.6.10.rc.1", ipAddress: "", sshUser: "ubuntu", password: "" }
     ];
-    
+
     initialDevices.forEach(device => {
       this.createDevice(device);
     });
