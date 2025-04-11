@@ -26,46 +26,51 @@ export interface DeviceSearchCriteria {
 export const DEVICE_TYPES = ["Krait1", "Krait2", "Bagheera2", "Bagheera3", "Octo"];
 
 // OTA versions by device type
-// krait1 - 2.x, krait2 - 4.x, bagheera2 - 3.x, bagheera3 - 5.x, octo - 7.x
+// krait1 - 2.x, krait2 - 4.x, bagheera2 - 3.x, bagheera3 - 5.x, octo - 7.x, mowgli - 6.x
+// OTA versions are in the format <major>.<minor>.<patch>.<release>_<build>
+// where <major> is the major version, <minor> is the minor version, <patch> is the patch version,
+// <release> is the release candidate version, and <build> is the build number.
+// The release candidate version is optional and is only present for release candidates.
+// The build number is optional and is only present for development builds.
+// The OTA versions are sorted in descending order, with the latest version first.
 export const OTA_VERSIONS_BY_TYPE = {
   "Krait1": [
-    "2.3.5.rc.1",
-    "2.3.6.rc.2",
-    "2.4.0.rc.1",
-    "2.4.1.rc.3_dev2",
-    "2.5.0.rc.1",
-    "2.6.10.rc.1_dev7"
+    "2.6.10.rc.1_dev7",
+    "2.6.9.rc.3",
+    "2.6.8.rc.6",
+    "2.5.19.rc.5"
   ],
   "Krait2": [
-    "4.0.2.rc.1",
-    "4.1.0.rc.2",
-    "4.2.3.rc.1",
-    "4.3.0.rc.2_dev3",
-    "4.5.8.rc.1",
-    "4.6.10.rc.2_dev6"
+    "4.6.10.rc.2_dev6",
+    "4.6.10.rc.2",
+    "4.6.8.rc.5",
+    "4.6.6.rc.8",
+    "4.5.31.rc.4.1",
+    "4.5.29.rc.3.2"
   ],
   "Bagheera2": [
-    "3.0.1.rc.1",
-    "3.1.2.rc.1",
-    "3.2.1.rc.2",
-    "3.2.4.rc.1_dev2",
-    "3.3.0.rc.1",
-    "3.6.10.rc.1_dev6",
-    "3.6.10.rc.1_dev7"
+    "3.6.10.rc.1_dev7",
+    "3.6.9.rc.2",
+    "3.6.8.rc.6",
+    "3.6.6.rc.5",
+    "3.6.4.rc.6",
+    "3.6.3.rc.6",
+    "3.6.1.rc.4",
+    "3.5.29.rc.3"
   ],
   "Bagheera3": [
-    "5.0.0.rc.1",
-    "5.1.2.rc.1",
-    "5.2.0.rc.2",
-    "5.3.1.rc.1_dev4",
-    "5.6.10.rc.2_dev6"
+    "5.6.10.rc.2_dev6",
+    "5.6.10.rc.2",
+    "5.6.8.rc.5",
+    "5.6.6.rc.4",
+    "5.6.4.rc.6",
+    "5.5.29.rc.11"
   ],
   "Octo": [
-    "7.0.0.rc.1",
-    "7.0.1.rc.2",
-    "7.0.2.rc.3_dev2",
-    "7.1.0.rc.1",
-    "7.2.0.rc.1_dev1"
+    "7.6.10.rc.1"
+  ],
+  "Mowgli": [
+    "6.5.32.rc.6"
   ]
 };
 
