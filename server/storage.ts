@@ -52,7 +52,7 @@ export class MemStorage implements IStorage {
       { deviceType: "Bagheera2", deviceId: "3633039070", currentOTA: "3.6.10.rc.1_dev7", ipAddress: "172.16.17.255", sshUser: "ubuntu", password: "ubuntu1" },
       { deviceType: "Bagheera3", deviceId: "103302400034", currentOTA: "5.6.10.rc.2_dev6", ipAddress: "192.168.2.3", sshUser: "ubuntu", password: "ubuntu1" },
       { deviceType: "Bagheera3", deviceId: "103022400202", currentOTA: "5.6.10.rc.2_dev6", ipAddress: "172.16.18.37", sshUser: "ubuntu", password: "ubuntu1" },
-      { deviceType: "Octo", deviceId: "125122400015", currentOTA: "6.0.1.rc.3_dev1", ipAddress: "172.16.18.215", sshUser: "ubuntu", password: "utnubu" }
+      { deviceType: "Octo", deviceId: "125222400003", currentOTA: "7.6.10.rc.1", ipAddress: "172.16.17.227", sshUser: "ubuntu", password: "EKM2800Netra123" }
     ];
     
     initialDevices.forEach(device => {
