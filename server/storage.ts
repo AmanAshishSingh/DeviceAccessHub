@@ -52,9 +52,9 @@ export class MemStorage implements IStorage {
       { deviceType: "Bagheera3", deviceId: "103302400034", currentOTA: "5.6.10.rc.2_dev6", ipAddress: "172.16.19.252", sshUser: "ubuntu", password: "ubuntu1" },
       { deviceType: "Bagheera3", deviceId: "103212400422", currentOTA: "5.6.10.rc.2_dev6", ipAddress: "172.16.20.9", sshUser: "ubuntu", password: "ubuntu1" },
       { deviceType: "Bagheera3", deviceId: "103022400202", currentOTA: "5.6.10.rc.2_dev6", ipAddress: "172.16.18.37", sshUser: "ubuntu", password: "ubuntu1" },
-      { deviceType: "Octo", deviceId: "125222400003", currentOTA: "7.6.10.rc.1", ipAddress: "172.16.17.227", sshUser: "ubuntu", password: "EKM2800Netra123" },
-      { deviceType: "Octo", deviceId: "125122400018", currentOTA: "7.6.10.rc.1", ipAddress: "", sshUser: "ubuntu", password: "EKM2800Netra123" },
-      { deviceType: "Octo", deviceId: "125122400021", currentOTA: "7.6.10.rc.1", ipAddress: "", sshUser: "ubuntu", password: "" }
+      { deviceType: "Octo", deviceId: "125222400003", currentOTA: "7.6.10.rc.1", ipAddress: "172.16.17.227", sshUser: "ubuntu", password: "EKM2800123Netra" },
+      { deviceType: "Octo", deviceId: "125122400018", currentOTA: "7.6.10.rc.1", ipAddress: "172.16.17.186", sshUser: "ubuntu", password: "EKM2800123Netra" },
+      { deviceType: "Octo", deviceId: "125122400021", currentOTA: "7.6.10.rc.1", ipAddress: "172.16.16.61", sshUser: "ubuntu", password: "EKM2800123Netra" }
     ];
 
     initialDevices.forEach(device => {
